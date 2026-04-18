@@ -173,13 +173,13 @@ The training script reports:
 - The final prediction is obtained by applying `sigmoid` and thresholding.
 - Resize masks with **nearest interpolation** to preserve labels.
 
-## Example Repository Description
+<!-- ## Example Repository Description
 
 > PyTorch U-Net for binary skin lesion segmentation on ISIC 2016.
 
 ## License
 
-You can use the **MIT License** for this repository if you want a simple and permissive open-source license.
+You can use the **MIT License** for this repository if you want a simple and permissive open-source license. -->
 
 ## Acknowledgment
 
