@@ -4,22 +4,23 @@ import torch
 import random
 from tqdm import tqdm
 from model.UNet import UNet
+from model.UNet3Plus import UNet3Plus
 import matplotlib.pyplot as plt
 from loss import DiceLossWithLogits
 from dataset.isic import ISICDataset
 from torch.utils.data import DataLoader, random_split
 
 SEED = 42
-IMAGE_SIZE = 256
+IMAGE_SIZE = 256 #should be in {256, 320, 384, 512, 640} for UNet3Plus
 BATCH_SIZE = 8
 EPOCHS = 30
 LR = 1e-3
 NUM_WORKERS = 0
 VAL_RATIO = 0.2
 USE_AMP = True
-SAVE_DIR = "/root/U-Net/checkpoints"    #Path to save checkpoints and logs
+SAVE_DIR = ""    #Path to save checkpoints and logs
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-DATA_DIR = "/root/U-Net/dataset/isic"      #Path to dataset
+DATA_DIR = ""      #Path to dataset
 
 def set_seed(seed=42):
     random.seed(seed)
@@ -170,13 +171,13 @@ def main():
     full_train_dataset = ISICDataset(
         data_dir=DATA_DIR,
         split="train",
-        image_size=256
+        image_size=IMAGE_SIZE
     )
 
     test_dataset = ISICDataset(
         data_dir=DATA_DIR,
         split="test",
-        image_size=256
+        image_size=IMAGE_SIZE
     )
 
     val_size = int(len(full_train_dataset) * VAL_RATIO)
@@ -217,6 +218,11 @@ def main():
         out_channels=1,
         bn=True
     ).to(DEVICE)
+
+    # model = UNet3Plus(
+    #     in_channels=3,
+    #     out_channels=1
+    # ).to(DEVICE)
 
     criterion = DiceLossWithLogits()
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
@@ -274,7 +280,6 @@ def main():
     csv_path = os.path.join(SAVE_DIR, "training.csv")
     save_csv(history, csv_path)
     save_plots(history, SAVE_DIR)
-
 
 if __name__ == "__main__":
     main()
